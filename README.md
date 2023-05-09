@@ -9,6 +9,11 @@ opencart 3
   хостинге
 - Обновить модификатор в админке
 
+_Структура шагов и блоков в настройках корзины Simple должна быть примерно
+[такой](https://raw.githubusercontent.com/get-web/Examples/main/other/opencart/simpleopencart_for_unishop2_by_get-web-blocks.jpg).
+То есть блоки находятся друг под другом, но возможности ничем не ограничены,
+просто другие варианты еще не тестировались. Последовательность любая._
+
 ### Демонстрация:
 
 [![ALT](https://raw.githubusercontent.com/get-web/Examples/main/other/opencart/simpleopencart_for_unishop2_by_get-web_video_preview.jpg)](https://www.youtube.com/watch?v=OneLxe7jFGo)
