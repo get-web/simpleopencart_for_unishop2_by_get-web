@@ -14,3 +14,13 @@ opencart 3
 [![ALT](https://raw.githubusercontent.com/get-web/Examples/main/other/opencart/simpleopencart_for_unishop2_by_get-web_video_preview.jpg)](https://www.youtube.com/watch?v=OneLxe7jFGo)
 
 Alternative demo: [link](https://www.youtube.com/watch?v=OneLxe7jFGo)
+
+#### Поддержать проект:
+
+Данная модификация предоставляется абсолютно бесплатно, поэтому вы можете
+отправить **благодарность по реквизитам**:
+
+- https://yoomoney.ru/to/410018011293312
+
+_Любая ваша поддержка это мотивация выкладывать в общий доступ другие наработки
+и поддерживать их._
