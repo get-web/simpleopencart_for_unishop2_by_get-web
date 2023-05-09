@@ -9,5 +9,14 @@ opencart 3
   хостинге
 - Обновить модификатор в админке
 
-![](https://raw.githubusercontent.com/get-web/Examples/main/other/opencart/simpleopencart_for_unishop2_by_get-web.mp4)
+#### Демонстрация:
+
+[![ALT](https://raw.githubusercontent.com/get-web/Examples/main/other/opencart/simpleopencart_for_unishop2_by_get-web_video_preview.jpg)](https://www.youtube.com/watch?v=OneLxe7jFGo)
+
 Alternative demo: [link](https://www.youtube.com/watch?v=OneLxe7jFGo)
+
+<style type="text/css">
+    img {
+        width: 300px;
+    }
+</style>
