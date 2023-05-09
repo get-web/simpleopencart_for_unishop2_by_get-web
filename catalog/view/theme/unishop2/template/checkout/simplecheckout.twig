@@ -1,0 +1,417 @@
+{% if not ajax and not popup and not as_module %}
+{% set simple_page = 'simplecheckout' %}
+{% set heading_title = heading_title  ~ (display_weight ? '&nbsp;(<span id="weight">' ~ weight  ~ '</span>)' : '') %}
+{% include simple_header %}
+<style>
+    {% if left_column_width %}
+        @media only screen and (min-width:1024px) {
+            .simplecheckout-left-column {
+                width: {{ left_column_width }}%;
+            }
+        }
+    {% endif %}
+    {% if right_column_width %}
+        @media only screen and (min-width:1024px) {
+            .simplecheckout-right-column {
+                width: {{ right_column_width }}%;
+            }
+        }
+    {% endif %}
+    {% if customer_with_payment_address %}
+        #simplecheckout_customer {
+            margin-bottom: 0;
+        }
+        #simplecheckout_customer .simplecheckout-block-content {
+            border-bottom-width: 0;
+            padding-bottom: 0;
+        }
+        #simplecheckout_payment_address div.checkout-heading {
+            display: none;
+        }
+        #simplecheckout_payment_address .simplecheckout-block-content {
+            border-top-width: 0;
+            padding-top: 0;
+        }
+    {% endif %}
+    {% if customer_with_shipping_address %}
+        #simplecheckout_customer {
+            margin-bottom: 0;
+        }
+        #simplecheckout_customer .simplecheckout-block-content {
+            border-bottom-width: 0;
+            padding-bottom: 0;
+        }
+        #simplecheckout_shipping_address div.checkout-heading {
+            display: none;
+        }
+        #simplecheckout_shipping_address .simplecheckout-block-content {
+            border-top-width: 0;
+            padding-top: 0;
+        }
+    {% endif %}
+</style>
+<div class="simple-content">
+{% endif %}
+    {% if not ajax or (ajax and popup) %}
+    <script type="text/javascript">
+        {% if popup %} 
+            var simpleScriptsInterval = window.setInterval(function(){
+                if (typeof jQuery !== 'undefined' && jQuery.isReady) {
+                    window.clearInterval(simpleScriptsInterval);
+
+                    if (typeof Simplecheckout !== "function") {
+                        {% for script in simple_scripts %}
+                            $("head").append('<script src="' + '{{ script }}' + '"></' + 'script>');
+                        {% endfor %}
+
+                        {% for style in simple_styles %}
+                            $("head").append('<link href="' + '{{ style }}' + '" rel="stylesheet"/>');
+                        {% endfor %}                         
+                    }
+                }
+            },0);
+        {% endif %}
+
+        var startSimpleInterval_{{ group }} = window.setInterval(function(){
+            if (typeof jQuery !== 'undefined' && typeof Simplecheckout === "function" && jQuery.isReady) {
+                window.clearInterval(startSimpleInterval_{{ group }});
+
+                var simplecheckout_{{ group }} = new Simplecheckout({
+                    mainRoute: "checkout/simplecheckout",
+                    additionalParams: "{{ additional_params }}",
+                    additionalPath: "{{ additional_path }}",
+                    mainUrl: "{{ action }}",
+                    mainContainer: "#simplecheckout_form_{{ group }}",
+                    currentTheme: "{{ current_theme }}",
+                    loginBoxBefore: "{{ login_type == 'flat' ? '#simplecheckout_customer .simplecheckout-block-content:first' : '' }}",
+                    displayProceedText: {{ display_proceed_text ? 1 : 0 }},
+                    scrollToError: {{ scroll_to_error ? 1 : 0 }},
+                    scrollToPaymentForm: {{ scroll_to_payment_form ? 1 : 0 }},
+                    notificationDefault: {{ notification_default ? 1 : 0 }},
+                    notificationToasts: {{ notification_toasts ? 1 : 0 }},
+                    notificationCheckForm: {{ notification_check_form ? 1 : 0 }},
+                    notificationCheckFormText: "{{ notification_check_form_text }}",
+                    useAutocomplete: {{ use_autocomplete ? 1 : 0 }},
+                    useStorage: {{ use_storage ? 1 : 0 }},
+                    popup: {{ popup or as_module ? 1 : 0 }},
+                    agreementCheckboxStep: {{ agreement_checkbox_step ? agreement_checkbox_step : '\'0\'' }},
+                    enableAutoReloaingOfPaymentFrom: {{ enable_reloading_of_payment_form ? 1 : 0 }},
+                    javascriptCallback: function() {try{ {{ javascript_callback }} } catch (e) {console.log(e)}},
+                    stepButtons: {{ step_buttons }},
+                    menuType: {{ menu_type ? menu_type : '1' }},
+                    languageCode: "{{ language_code }}"
+                });
+
+                if (typeof toastr !== 'undefined') {
+                    toastr.options.positionClass = "{{ notification_position ? notification_position : 'toast-top-right' }}";
+                    toastr.options.timeOut = "{{ notification_timeout ? notification_timeout : '5000' }}";
+                    toastr.options.progressBar = true;
+                }
+
+                $(document).ajaxComplete(function(e, xhr, settings) {
+                    if (settings.url.indexOf("route=module/cart&remove") > 0 || (settings.url.indexOf("route=module/cart") > 0 && settings.type == "POST") || settings.url.indexOf("route=checkout/cart/add") > 0 || settings.url.indexOf("route=checkout/cart/remove") > 0) {
+                        window.resetSimpleQuantity = true;
+                        simplecheckout_{{ group }}.reloadAll();
+                    }
+                });
+
+                $(document).ajaxSend(function(e, xhr, settings) {
+                    if (settings.url.indexOf("checkout/simplecheckout&group") > 0 && typeof window.resetSimpleQuantity !== "undefined" && window.resetSimpleQuantity) {
+                        settings.data = settings.data.replace(/quantity.+?&/g,"");
+                        window.resetSimpleQuantity = false;
+                    }
+                });
+
+                simplecheckout_{{ group }}.init();
+                
+            }
+            $('[data-gw-cart="target"]').html($('[data-gw-cart="source"]').html());
+        },0);
+    </script>
+    {% endif %}
+    <div id="simplecheckout_form_{{ group }}" {{ display_error and has_error ? 'data-error="true"' : '' }} {{ logged ? 'data-logged="true"' : '' }}>
+        <div class="row" style="position: relative;">
+            <div class="col-sm-12 col-md-9 col-lg-9 col-xxl-15">
+                <div class="simplecheckout">
+                    {% if not cart_empty %}
+                        {% if steps_count > 1 %}
+                            {% if menu_type == '2' %}
+                                <div id="simplecheckout_step_menu" class="simplecheckout-vertical-menu simplecheckout-top-menu">
+                                    {% for i in 1..steps_count %}
+                                        <div class="checkout-heading simple-step-vertical" style="display:none" data-onclick="gotoStep" data-step="{{ i }}"><h4 class="panel-title">{{ step_names[i-1] }}</h4></div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div id="simplecheckout_step_menu">
+                                    {% for i in 1..steps_count %}
+                                        <span class="simple-step" data-onclick="gotoStep" data-step="{{ i }}">{{ step_names[i-1] }}</span>{% if i < steps_count %}<span class="simple-step-delimiter" data-step="{{ i+1 }}"><img src="{{ additional_path }}catalog/view/image/next_gray.png"></span>{% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if steps_count > 1 and menu_type == '2' %}
+                            <div class="simplecheckout-steps-wrapper">
+                        {% endif %}
+
+                        {% if errors is not empty and display_error %}
+                            {% for error in errors %}
+                                <div class="alert alert-danger simplecheckout-warning-block" data-error="true">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}                 
+                        {% endif %}
+
+                        {%
+                            set replace = {
+                                '{three_column}'     : '<div class="simplecheckout-three-column">',
+                                '{/three_column}'    : '</div>',
+                                '{left_column}'      : '<div class="simplecheckout-left-column">',
+                                '{/left_column}'     : '</div>',
+                                '{right_column}'     : '<div class="simplecheckout-right-column">',
+                                '{/right_column}'    : '</div>',
+                                '{step}'             : '<div class="simplecheckout-step">',
+                                '{/step}'            : '</div>',
+                                '{clear_both}'       : '<div style="width:100%;clear:both;height:1px"></div>',
+                                '{customer}'         : simple_blocks['customer'],
+                                '{payment_address}'  : simple_blocks['payment_address'],
+                                '{shipping_address}' : simple_blocks['shipping_address'],
+                                '{cart}'             : simple_blocks['cart'],
+                                '{shipping}'         : simple_blocks['shipping'],
+                                '{payment}'          : simple_blocks['payment'],
+                                '{agreement}'        : simple_blocks['agreement'],
+                                '{help}'             : simple_blocks['help'],
+                                '{summary}'          : simple_blocks['summary'],
+                                '{comment}'          : simple_blocks['comment'],
+                                '{payment_form}'     : '<div class="simplecheckout-block" id="simplecheckout_payment_form">' ~ simple_blocks['payment_form'] ~ '</div>'
+                            }
+                        %}
+
+                        {% for key, value in simple_blocks %}
+                            {% set key_clear = key %}
+                            {% set key = '{' ~ key ~ '}' %}
+                            {% if replace[key] is not defined %}
+                                {% set replace = replace|merge({(key): '<div class="simplecheckout-block" id="' ~ key_clear ~ '">' ~ value ~ '</div>'}) %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {{ simple_template|replace(replace) }}
+                        
+                        <div id="simplecheckout_bottom" style="width:100%;height:1px;clear:both;"></div>
+                        <div class="simplecheckout-proceed-payment" id="simplecheckout_proceed_payment" style="display:none;">{{ text_proceed_payment }}</div>
+                        
+                        {% if display_agreement_checkbox %}
+                            <div class="alert alert-danger simplecheckout-warning-block" id="agreement_warning" {% if display_error and has_error %}data-error="true"{% else %}style="display:none;"{% endif %}>
+                                <div class="agreement_all">
+                                    {% for agreement_id, warning_agreement in error_warning_agreement %}
+                                        <div class="agreement_{{ agreement_id }}">{{ warning_agreement }}</div>
+                                    {% endfor %}
+                                </div>                    
+                            </div>
+                        {% endif %}  
+
+                        {% if steps_count > 1 and menu_type == '2' %}
+                            </div>
+                        {% endif %}
+                        
+                        {% if steps_count > 1 and menu_type == '2' %}
+                            <div id="simplecheckout_step_menu" class="simplecheckout-vertical-menu simplecheckout-bottom-menu">
+                                {% for i in 1..steps_count %}
+                                    <div class="checkout-heading simple-step-vertical" style="display:none" data-onclick="gotoStep" data-step="{{ i }}"><h4 class="panel-title">{{ step_names[i-1] }}</h4></div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}           
+                    
+                    {% else %}
+                        <div class="content">{{ text_error }}</div>
+                        <div style="display:none;" id="simplecheckout_cart_total">{{ cart_total }}</div>
+                        {% if display_weight %}
+                            <div style="display:none;" id="simplecheckout_cart_weight">{{ weight }}</div>
+                        {% endif %}
+                        {% if not popup and not as_module %}
+                            <div class="simplecheckout-button-block buttons">
+                                <div class="simplecheckout-button-right right"><a href="{{ continue }}" class="button btn-primary button_oc btn"><span>{{ button_continue }}</span></a></div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="unicheckout-sticky col-sm-12 col-md-3 col-lg-3 col-xxl-5"  style="top: 70px;">
+                <div class="unicheckout-sticky__wrapper">
+                    <div class="unicheckout-sticky__heading">{{ unicheckout_heading }} </div>
+
+                    <div class="unicheckout-sticky__total" data-gw-cart="target">
+                        
+                    </div>
+                    
+                    <div class="unicheckout-sticky__confirm">
+
+                        <div class="simplecheckout-button-block buttons" id="buttons">
+                            <div class="unicheckout-sticky-box">
+                                {% if display_agreement_checkbox %}
+                                    <span id="agreement_checkbox" class="unicheckout-sticky__confirm-agree">
+                                        {% for agreement_id, text_agreement in text_agreements %}
+                                            <div class="checkbox"><label><input type="checkbox" name="agreements[]" value="{{ agreement_id }}" {{ agreement_id in agreements ? 'checked="checked"' : '' }} />{{ text_agreement }}</label></div>
+                                        {% endfor %}
+                                    </span>
+                                {% endif %}                
+                                {% if steps_count > 1 %}
+                                <a class="button btn-primary button_oc btn" data-onclick="nextStep" id="simplecheckout_button_next"><span>{{ button_next }}</span></a>
+                                {% endif %}
+                                <a class="unicheckout-sticky__confirm-btn btn btn-xl btn-block btn-primary" {{ block_order ? 'disabled' : ''}} data-onclick="createOrder" id="simplecheckout_button_confirm"><span>{{ button_order }}</span></a>
+                            </div>
+                            <div class="unicheckout-sticky-box">{% if display_back_button %}
+                                <a class="button btn-primary button_oc btn" data-onclick="backHistory" id="simplecheckout_button_back"><span>{{ button_back }}</span></a>
+                                {% endif %}{% if steps_count > 1 %}
+                                <a class="button btn-primary button_oc btn" data-onclick="previousStep" id="simplecheckout_button_prev"><span>{{ button_prev }}</span></a>
+                                {% endif %}</div>
+                        </div>                
+                                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% if not ajax and not popup and not as_module %}
+</div>
+{% include simple_footer %}
+{% endif %}
+
+<link rel="stylesheet" href="/catalog/view/theme/unishop2/stylesheet/checkout.css">
+
+<style>
+
+/* shipm */
+
+.shipm {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	position: relative;
+	z-index: 0;
+}
+
+.shipm__quote {
+	font-size: 15px;
+	font-weight: bold;
+}
+
+.shipm__description {
+	font-size: 12px;
+}
+
+.shipm__pic {
+	width: 70px;
+	height: 70px;
+	margin-right: 10px;
+	flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+	.shipm__pic {
+		display: none;
+	}
+}
+
+.shipm__img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.shipm__bg {
+	pointer-events: none;
+	position: absolute;
+	top: -6px;
+	right: 100%;
+	bottom: -6px;
+	left: -26px;
+	z-index: -2;
+	border-radius: 16px;
+	background: linear-gradient(
+		to right,
+		rgba(254, 114, 0, 0.1) 0%,
+		rgba(254, 114, 0, 0) 100%
+	);
+	opacity: 0;
+	transition: 0.2s all;
+}
+
+.shipm__inp:checked ~ .shipm__bg {
+	opacity: 1;
+	right: -6px;
+	left: -6px;
+	transition: 0.2s all 0.1s;
+}
+.checkout-cart__quantity {
+    width: 100px;
+}
+#simplecheckout_cart .form-control.qty-switch__input {
+    min-width: 25px;
+}
+
+.simplecheckout-button-block {
+    display: grid;
+    gap: 15px;
+    background: transparent;
+}
+
+.unicheckout-sticky-box:empty {
+    display: none;
+}
+
+.unicheckout-sticky-box {
+    display: grid;
+    gap: 15px;
+    text-align: left;
+}
+
+#agreement_checkbox {
+    margin: 0;
+    float: none;
+}
+
+#agreement_checkbox label {
+    font-size: 12px;
+}
+
+.simple-content .checkout-heading {
+    font-weight: 500;
+    background: linear-gradient(
+    to right,
+    #f7f7f7 0%,
+    rgba(254, 114, 0, 0) 100%);
+    border-color: #ddd0;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 3px;
+    margin-bottom: 5px;
+}
+
+.simplecheckout .radio label.shipm , .simpleregister .radio label.shipm  {
+    display: flex !important;
+    gap: 10px;
+    align-items: center;
+}
+
+.simplecheckout-button-block.buttons:after {
+    display: none;
+}
+
+.unicheckout-sticky__confirm-btn {
+    line-height: 44px !important;
+}
+
+.remove-coupon {
+    margin-left: 4px;
+    align-self: center;
+    cursor: pointer;
+    opacity: .3;
+    transition: .2s all;
+}
+
+.remove-coupon:hover {
+    opacity: 1;
+}
+
+</style>

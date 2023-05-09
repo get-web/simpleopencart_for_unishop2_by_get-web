@@ -1,0 +1,16 @@
+{{ header }}
+<div id="account-forgotten" class="container">
+	<div class="breadcrumb-h1 {{ menu_expanded ? 'col-md-offset-3 col-lg-offset-3 col-xxl-offset-4' }}">
+		<ul class="breadcrumb mobile">
+			{% for key, breadcrumb in breadcrumbs %}
+				{% if key + 1 < breadcrumbs|length %}
+					<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				{% else %}
+					{% if not hide_last_breadcrumb or (hide_last_breadcrumb and key == 1) %}<li>{{ breadcrumb.text }}</li>{% endif %}
+				{% endif %}
+			{% endfor %}
+		</ul>
+		<h1 class="heading">{{ heading_title }}</h1>
+	</div>
+		<div id="content" class="{{ class }}">
+			{{ content_top }}

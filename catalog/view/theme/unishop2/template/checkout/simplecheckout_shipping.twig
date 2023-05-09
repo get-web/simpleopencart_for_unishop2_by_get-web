@@ -1,0 +1,102 @@
+<div class="simplecheckout-block" id="simplecheckout_shipping" {{ hide ? 'data-hide="true"' : '' }} {{ display_error and has_error ? 'data-error="true"' : '' }}>
+    {% if display_header %}
+        <div class="checkout-heading panel-heading">{{ text_checkout_shipping_method }}</div>
+    {% endif %}
+    <div class="alert alert-danger simplecheckout-warning-block" {{ display_error and has_error_shipping ? '' : 'style="display:none"' }}>{{ error_shipping }}</div>
+    <div class="simplecheckout-block-content">
+        {% if shipping_methods is not empty %}
+            {% if display_type == 2  %}
+                {% set current_method = false %}
+                <select data-onchange="reloadAll" name="shipping_method" class="form-control">
+                    <option value="" disabled="disabled" {% if code is empty %}selected="selected"{% endif %}>{{ text_select }}</option>
+                    {% for shipping_method in shipping_methods %}
+                        {% if shipping_method['title'] is not empty %}
+                        <optgroup label="{{ shipping_method['title'] }}">
+                        {% endif %}
+                        {% if shipping_method['error'] is empty %}
+                            {% for quote in shipping_method['quote'] %}
+                                <option value="{{ quote['code'] }}" {{ quote['dummy'] is not empty ? 'disabled="disabled"' : '' }} {{ quote['dummy'] is not empty ? 'data-dummy="true"' : '' }} {% if quote['code'] == code %}selected="selected"{% endif %}>{{ quote['title'] }}{{ quote['text'] is not empty ? ' - ' ~ quote['text'] : '' }}</option>
+                                {% if quote['code'] == code %}
+                                    {% set current_method = quote %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <option value="{{ shipping_method['code'] }}" disabled="disabled">{{ shipping_method['error'] }}</option>
+                        {% endif %}
+                        {% if shipping_method['title'] is not empty %}
+                        </optgroup>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                {% if current_method %}
+                    {% if current_method['description'] is not empty %}
+                        <div class="simplecheckout-methods-description">{{ current_method['description'] }}</div>
+                    {% endif %}
+                    {% if rows is not empty %}
+                        {% for row in rows %}
+                          {{ row }}
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            {% else %}
+
+                {% for shipping_method in shipping_methods %}
+                    {% if shipping_method['title'] is not empty %}
+                    <p><b>{{ shipping_method['title'] }}</b></p>
+                    {% endif %}
+                    {% if shipping_method['warning'] is not empty %}
+                        <div class="simplecheckout-error-text">{{ shipping_method['warning'] }}</div>
+                    {% endif %}
+                    {% if shipping_method['error'] is empty %}
+                        {% for quote in shipping_method['quote'] %}
+                            <div class="shipping-method__item radio">
+                                <label class="shipm input">
+
+                                    <input type="radio" data-onchange="reloadAll" name="shipping_method" {{ quote['dummy'] is not empty ? 'disabled="disabled"' : '' }} {{ quote['dummy'] is not empty ? 'data-dummy="true"' : '' }} value="{{ quote['code'] }}" id="{{ quote['code'] }}" {% if quote['code'] == code %}checked="checked"{% endif %} class="shipm__inp" />
+
+                                    {% if quote.image %}
+                                        <div class="shipm__pic"><img src="{{ quote.image }}" class="shipm__img"></div>
+                                    {% endif %}
+
+                                    <div class="shipm__content">
+                                        <div class="shipm__heading">
+                                            <span class="shipm__quote">{{ quote.title }}</span> 
+                                            <span class="shipm__price">({{ quote.text }})</span>
+                                        </div>
+                                         {% if quote['description'] is not empty and (display_for_selected is empty or (display_for_selected is not empty and quote['code'] == code)) %}
+                                        <div class="shipm__description">
+                                            {{ quote.description | replace({"%br%":"<br/>", '\r\n': '<br/>', '\n': '<br/>', '\r': '<br/>'}) }}
+                                        </div>
+                                            {% if quote['code'] == code and rows is not empty %}
+                                                <div class="shipm__description">
+                                                {% for row in rows %}
+                                                {{ row }}
+                                                {% endfor %}
+                                                 </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="shipm__bg"></div>
+
+                                </label>
+                            </div>
+
+                        {% endfor %}
+                    {% else %}
+                        <div class="simplecheckout-error-text">{{ shipping_method['error'] }}</div>
+                    {% endif %}
+                {% endfor %}
+
+            {% endif %}
+            <input type="hidden" name="shipping_method_current" value="{{ code }}" />
+            <input type="hidden" name="shipping_method_checked" value="{{ checked_code }}" />
+        {% endif %}
+        {% if shipping_methods is empty and address_empty and display_address_empty %}
+            <div class="simplecheckout-warning-text">{{ text_shipping_address }}</div>
+        {% endif %}
+        {% if shipping_methods is empty and not address_empty %}
+            <div class="simplecheckout-warning-text">{{ error_no_shipping }}</div>
+        {% endif %}
+    </div>
+</div>

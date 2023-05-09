@@ -1,0 +1,90 @@
+<div class="form-group {% if required %}required{% endif %} row-{{id}}">
+    <label class="control-label {{page == 'checkout' ? 'col-sm-4' : 'col-sm-2' }}" for="{{id}}">{{label}}</label>
+    <div class="{{page == 'checkout' ? 'col-sm-8' : 'col-sm-10'}}">
+      {% if type == 'select' or type == 'select2' %}
+        <select class="form-control" name="{{ name }}" id="{{ id }}" {{ bootstrap ? 'data-theme="bootstrap"' : '' }} {{ type == 'select2' ? 'data-type="select2"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>
+          {% for info in values %}
+            <option value="{{ info['id'] | escape }}" {{ value == info['id'] ? 'selected="selected"' : '' }}>{{ info['text'] }}</option>
+          {% endfor %}
+        </select>
+      {% elseif type == 'radio' %}
+        <div>
+        {% for info in values %}
+          <div class="radio">
+            <label><input type="radio" name="{{ name }}" id="{{ id }}_{{ info['id'] }}" value="{{ info['id'] | escape }}" {{ value == info['id'] ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : '' }}>{{ info['text'] }}</label>
+          </div>
+        {% endfor %}
+        </div>
+      {% elseif type == 'checkbox' %}
+        <div>
+        {% for info in values %}
+          <div class="checkbox">
+            <label><input type="checkbox" name="{{ name }}[]" id="{{ id }}_{{ info['id'] }}" value="{{ info['id'] | escape }}" {{ info['id'] in value ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ info['text'] }}</label>
+          </div>
+        {% endfor %}
+        </div>
+      {% elseif type == 'switcher' %}
+        <div>
+          <div class="checkbox">
+            <label><input type="checkbox" name="{{ name }}" id="{{ id }}" data-unchecked-value="0" value="1" {{ value == '1' ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ placeholder }}</label>
+          </div>
+        </div>
+      {% elseif type == 'textarea' %}
+        <textarea class="form-control" name="{{ name }}" id="{{ id }}" placeholder="{{ placeholder }}" {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ value }}</textarea>
+      {% elseif type == 'captcha' %}
+        {% if site_key %}
+          <script src="https://www.google.com/recaptcha/api.js?hl={{ lang }}&onload=recaptchaInit&render=explicit" type="text/javascript" async defer></script>
+          <input type="hidden" name="{{ name }}" id="{{ id }}" value="{{ value }}">
+          <script type="text/javascript">
+            function recaptchaCallback(value) {
+              $('#{{ id }}').val(value).trigger('change');
+            }
+            function recaptchaInit(){
+              grecaptcha.render('simple-recaptcha');
+            }
+          </script>
+          <div id="simple-recaptcha" data-sitekey="{{ site_key }}" data-callback="recaptchaCallback"></div>
+        {% else %}
+          <input type="text" class="form-control" name="{{ name }}" id="{{ id }}" value="" placeholder="{{ placeholder }}" {{ reload ? 'data-onchange="reloadAll"' : ''}}>
+          <div class="simple-captcha-container"><img src="index.php?{{ additional_path }}route=common/simple_connector/captcha&t={{ time }}" alt="" id="captcha" /></div>
+        {% endif %}
+      {% elseif type == 'file' %}
+        <input type="button" value="{{ button_upload }}" data-file="{{ id }}" class="button form-control">
+        <div id="text_{{ id }}" style="margin-top:3px;max-width:200px;">{{ filename }}</div>
+        <input type="hidden" name="{{ name }}" id="{{ id }}" value="{{ value }}">
+      {% elseif type == 'date' %}
+        <div class="input-group date">
+          <input class="form-control" type="text" data-type="date" name="{{ name }}" id="{{ id }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attrs }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+          </span>
+        </div>
+      {% elseif type == 'time' %}
+      <div class="input-group time">
+        <input class="form-control" type="text" data-type="time" name="{{ name }}" id="{{ id }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attrs }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
+        </span>
+      </div>
+      {% elseif type == 'datetime' %}
+      <div class="input-group datetime">
+        <input class="form-control" type="text" data-type="datetime" name="{{ name }}" id="{{ id }}" value="{{ value }}" placeholder="{{ placeholder }}" {{ attrs }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+        </span>
+      </div>
+      {% else %}
+        <input  class="form-control" type="{{ type }}" name="{{ name }}" id="{{ id }}" {{ type == 'password' ? 'data-validate-on="keyup"' : '' }} value="{{ value }}" placeholder="{{ placeholder }}" {{ attrs }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>
+      {% endif %}
+      {% if rules is not empty %}
+        <div class="simplecheckout-rule-group" data-for="{{ id }}">
+          {% for rule in rules %}
+            <div {{ rule['display'] and not rule['passed'] ? '' : 'style="display:none;"' }} data-for="{{ id }}" data-for-type="{{ type }}"  data-rule="{{ rule['id'] }}" class="simplecheckout-error-text simplecheckout-rule" {{ rule['attrs'] }}>{{ rule['text'] }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% if description %}
+        <div class="simplecheckout-tooltip" data-for="{{ id }}">{{ description }}</div>
+      {% endif %}
+    </div>
+ </div>
