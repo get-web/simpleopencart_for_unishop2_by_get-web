@@ -221,7 +221,9 @@
                                 {% endfor %}
                             </div>
                         {% endif %}           
-                    
+                        <script>
+                            $('.unicheckout-sticky__wrapper').show();
+                        </script>
                     {% else %}
                         <div class="content">{{ text_error }}</div>
                         <div style="display:none;" id="simplecheckout_cart_total">{{ cart_total }}</div>
@@ -233,6 +235,9 @@
                                 <div class="simplecheckout-button-right right"><a href="{{ continue }}" class="button btn-primary button_oc btn"><span>{{ button_continue }}</span></a></div>
                             </div>
                         {% endif %}
+                        <script>
+                            $('.unicheckout-sticky__wrapper').hide();
+                        </script>
                     {% endif %}
                 </div>
             </div>

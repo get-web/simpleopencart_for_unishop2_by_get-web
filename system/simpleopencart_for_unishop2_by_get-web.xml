@@ -4,6 +4,7 @@
   <version>1.0</version>
   <author>Vitalii P.</author>
   <link>https://get-web.site</link>
+
   <file path="catalog/controller/checkout/simplecheckout.php">
     <operation>
       <search>
@@ -22,6 +23,28 @@
       </add>
     </operation>
   </file> 
+
+  <!-- language -->
+  <file path="catalog/language/ru-ru/checkout/simplecheckout.php">
+    <operation>
+      <search><![CDATA[// Entry]]></search>
+      <add position="after"><![CDATA[
+        $_['button_apply']              = 'Применить';
+        $_['unicheckout_title']         = 'Товаров в корзине';
+        $_['unicheckout_heading']       = 'Ваш заказ';
+      ]]></add>
+    </operation>
+  </file>
+  <file path="catalog/language/en-gb/checkout/simplecheckout.php">
+    <operation>
+      <search><![CDATA[// Entry]]></search>
+      <add position="after"><![CDATA[
+        $_['button_apply']              = 'Apply';
+        $_['unicheckout_title']         = 'Products in the cart';
+        $_['unicheckout_heading']       = 'Your order';
+      ]]></add>
+    </operation>
+  </file>
 
 
 </modification>
