@@ -45,9 +45,9 @@
                                 <div class="shipm__heading">
                                     <span class="shipm__quote">{{ payment_method.title }}</span> 
                                 </div>
-                                {% if quote.description is not empty %}
+                                {% if payment_method.description is not empty %}
                                 <div class="shipm__description">
-                                    {{ quote.description | replace({"%br%":"<br/>", '\r\n': '<br/>', '\n': '<br/>', '\r': '<br/>'}) }}
+                                    {{ payment_method.description | replace({"%br%":"<br/>", '\r\n': '<br/>', '\n': '<br/>', '\r': '<br/>'}) }}
                                 </div>
                                 {% if payment_method['code'] == code and rows is not empty %}
                                         <div class="shipm__description">
