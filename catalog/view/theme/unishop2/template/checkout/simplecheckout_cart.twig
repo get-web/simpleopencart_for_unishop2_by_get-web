@@ -118,18 +118,14 @@
         <div class="unicheckout-sticky__total-text"><a onclick="uniScrollTo('.checkout-cart__wrapper'); return false;">{{ cart_total }}</a></div>
     </div>
     {% for total in totals %}
-        {% if total.code == 'sub_total' %}
-            <div class="unicheckout-sticky__total-item sub_total">
-                <div class="unicheckout-sticky__total-title">{{ total.title }}</div>
-                <div class="unicheckout-sticky__total-text"><span class="sub_total">{{ total.text }}</span></div>
+            <div class="unicheckout-sticky__total-item {{ total.code }}">
+                <div class="unicheckout-sticky__total-title">
+                    {{ total.title }}
+                </div>
+                <div class="unicheckout-sticky__total-text">
+                    <span class="{{ total.code }}">{{ total.text }}</span>
+                </div>
             </div>
-        {% endif %}
-        {% if total.code == 'total' %}
-            <div class="unicheckout-sticky__total-item total">
-                <div class="unicheckout-sticky__total-title">{{ total.title }}</div>
-                <div class="unicheckout-sticky__total-text"><span class="total">{{ total.text }}</span></div>
-            </div>
-        {% endif %}
     {% endfor %} 
 
 </div>
@@ -137,21 +133,3 @@
 <script>
 $('[data-gw-cart="target"]').html($('[data-gw-cart="source"]').html());
 </script>
-
-{# {% for total in totals %}
-    <div class="simplecheckout-cart-total" id="total_{{ total['code'] }}">
-        <span><b>{{ total['title'] }}:</b></span>
-        <span class="simplecheckout-cart-total-value">{{ total['text'] }}</span>
-        <span class="simplecheckout-cart-total-remove">
-            {% if total['code'] == 'coupon' %}
-                <i data-onclick="removeCoupon" title="{{ button_remove }}" class="fa fa-times-circle"></i>
-            {% endif %}
-            {% if total['code'] == 'voucher' %}
-                <i data-onclick="removeVoucher" title="{{ button_remove }}" class="fa fa-times-circle"></i>
-            {% endif %}
-            {% if total['code'] == 'reward' %}
-                <i data-onclick="removeReward" title="{{ button_remove }}" class="fa fa-times-circle"></i>
-            {% endif %}
-        </span>
-    </div>
-{% endfor %} #}
