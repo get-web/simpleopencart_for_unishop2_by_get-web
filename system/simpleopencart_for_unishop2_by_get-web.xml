@@ -1,7 +1,7 @@
 <modification>
   <name>simpleopencart for unishop2 by Get-Web</name>
   <code>simpleopencart_for_unishop2_by_get-web</code>
-  <version>1.01</version>
+  <version>1.02</version>
   <author>Vitalii P.</author>
   <link>https://get-web.site</link>
 
@@ -22,29 +22,42 @@
         <![CDATA[$this->_templateData['cart_total'] = $this->cart->countProducts();]]>
       </add>
     </operation>
+    <operation>
+      <search>
+        <![CDATA[$this->language->load('checkout/simplecheckout');]]>
+      </search>
+      <add position="before">
+        <![CDATA[$this->language->load('checkout/uni_checkout');]]>
+      </add>
+    </operation>
   </file> 
 
-  <!-- language -->
-  <file path="catalog/language/ru-ru/checkout/simplecheckout.php">
+  <file path="catalog/controller/checkout/simplecheckout_cart.php">
     <operation>
-      <search><![CDATA[// Entry]]></search>
-      <add position="after"><![CDATA[
-        $_['button_apply']              = 'Применить';
-        $_['unicheckout_title']         = 'Товаров в корзине';
-        $_['unicheckout_heading']       = 'Ваш заказ';
-      ]]></add>
+      <search>
+        <![CDATA[$this->_templateData['cart_total'] = str_replace($find, $replace, $text_items);]]>
+      </search>
+      <add position="replace">
+        <![CDATA[$this->_templateData['cart_total'] = $this->cart->countProducts();]]>
+      </add>
     </operation>
-  </file>
-  <file path="catalog/language/en-gb/checkout/simplecheckout.php">
     <operation>
-      <search><![CDATA[// Entry]]></search>
-      <add position="after"><![CDATA[
-        $_['button_apply']              = 'Apply';
-        $_['unicheckout_title']         = 'Products in the cart';
-        $_['unicheckout_heading']       = 'Your order';
-      ]]></add>
+      <search>
+        <![CDATA[$this->_templateData['cart_total'] = sprintf($text_items, $this->cart->countProducts()]]>
+      </search>
+      <add position="after">
+        <![CDATA[$this->_templateData['cart_total'] = $this->cart->countProducts();]]>
+      </add>
     </operation>
-  </file>
+    <operation>
+      <search>
+        <![CDATA[$this->language->load('checkout/simplecheckout');]]>
+      </search>
+      <add position="before">
+        <![CDATA[$this->language->load('checkout/uni_checkout');]]>
+      </add>
+    </operation>
+  </file> 
 
 
 </modification>
