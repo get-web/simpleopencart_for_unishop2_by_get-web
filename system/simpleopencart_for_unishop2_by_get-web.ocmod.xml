@@ -1,0 +1,26 @@
+<modification>
+  <name>simpleopencart for unishop2 by Get-Web</name>
+  <code>simpleopencart_for_unishop2_by_get-web</code>
+  <version>1.03</version>
+  <author>Vitalii P.</author>
+  <link>https://get-web.site</link>
+
+  <file path="catalog/controller/checkout/simplecheckout.php|catalog/controller/checkout/simplecheckout_cart.php">
+    <operation>
+      <search regex="true"><![CDATA[~(\$this->_templateData\['cart_total'\].+?)(?:\n|$)~]]></search>
+      <add position="replace">
+        <![CDATA[$this->_templateData['cart_total'] = $this->cart->countProducts();]]>
+      </add>
+    </operation>
+    <operation>
+      <search>
+        <![CDATA[$this->language->load('checkout/simplecheckout');]]>
+      </search>
+      <add position="before">
+        <![CDATA[$this->language->load('checkout/uni_checkout');]]>
+      </add>
+    </operation>
+  </file> 
+
+
+</modification>
