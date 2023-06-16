@@ -65,7 +65,7 @@
                                         </div>
                                          {% if quote['description'] is not empty and (display_for_selected is empty or (display_for_selected is not empty and quote['code'] == code)) %}
                                         <div class="shipm__description">
-                                            {{ quote.description | replace({"%br%":"<br/>", '\r\n': '<br/>', '\n': '<br/>', '\r': '<br/>'}) }}
+                                            {{ quote.description | replace({"%br%":"<br/>"}) }}
                                         </div>
                                             {% if quote['code'] == code and rows is not empty %}
                                                 <div class="shipm__description">
