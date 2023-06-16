@@ -37,7 +37,7 @@
                             <span class="label label-info">{{ text_recurring_item }}</span> <small>{{ product.recurring }}</small>
                         {% endif %}
                     </div>
-                    <div class="checkout-cart__quantity quantity">
+                    <div class="checkout-cart__quantity">
                         <div class="qty-switch qty-switch__cart">
                             <i class="qty-switch__btn fa fa-minus" data-onclick="decreaseProductQuantity" data-toggle="tooltip" type="submit"></i>
                             <input type="text" data-onchange="changeProductQuantity" {{ quantity_step_as_minimum ? 'data-minimum="' ~ product['minimum'] ~ '"' : '' }} name="quantity[{{ product['cart_id'] is not empty ? product['cart_id'] : product['key'] }}]" value="{{ product['quantity'] }}" size="1" class="qty-switch__input form-control" autocomplete="off" />
