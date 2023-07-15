@@ -67,13 +67,6 @@
                                         <div class="shipm__description">
                                             {{ quote.description | replace({"%br%":"<br/>"}) }}
                                         </div>
-                                            {% if quote['code'] == code and rows is not empty %}
-                                                <div class="shipm__description">
-                                                {% for row in rows %}
-                                                {{ row }}
-                                                {% endfor %}
-                                                 </div>
-                                            {% endif %}
                                         {% endif %}
                                     </div>
 
@@ -81,6 +74,12 @@
 
                                 </label>
                             </div>
+
+                            {% if quote['code'] == code and rows is not empty %}
+                                {% for row in rows %}
+                                  {{ row }}
+                                {% endfor %}
+                            {% endif %}
 
                         {% endfor %}
                     {% else %}
