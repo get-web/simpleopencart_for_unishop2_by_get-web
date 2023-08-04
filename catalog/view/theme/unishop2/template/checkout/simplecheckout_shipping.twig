@@ -61,7 +61,9 @@
                                     <div class="shipm__content">
                                         <div class="shipm__heading">
                                             <span class="shipm__quote">{{ quote.title }}</span> 
-                                            <span class="shipm__price">({{ quote.text }})</span>
+                                            {% if quote['text'] is not empty %}
+                                            <span class="shipm__price">({{ quote['text']}})</span>
+                                            {% endif %}
                                         </div>
                                          {% if quote['description'] is not empty and (display_for_selected is empty or (display_for_selected is not empty and quote['code'] == code)) %}
                                         <div class="shipm__description">
