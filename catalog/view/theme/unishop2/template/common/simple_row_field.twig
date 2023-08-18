@@ -1,5 +1,5 @@
 <div class="form-group {% if required %}required{% endif %} row-{{id}}">
-    <label class="control-label {{page == 'checkout' ? 'col-sm-4' : 'col-sm-2' }}" for="{{id}}">{{label}}</label>
+    <label class="control-label {{page == 'checkout' ? 'col-sm-4' : 'col-sm-2' }} font-weight-bold" for="{{id}}">{{label}}</label>
     <div class="{{page == 'checkout' ? 'col-sm-8' : 'col-sm-10'}}">
       {% if type == 'select' or type == 'select2' %}
         <select class="form-control" name="{{ name }}" id="{{ id }}" {{ bootstrap ? 'data-theme="bootstrap"' : '' }} {{ type == 'select2' ? 'data-type="select2"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>
@@ -11,7 +11,7 @@
         <div>
         {% for info in values %}
           <div class="radio">
-            <label><input type="radio" name="{{ name }}" id="{{ id }}_{{ info['id'] }}" value="{{ info['id'] | escape }}" {{ value == info['id'] ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : '' }}>{{ info['text'] }}</label>
+            <label class="input"><input class="inpdec" type="radio" name="{{ name }}" id="{{ id }}_{{ info['id'] }}" value="{{ info['id'] | escape }}" {{ value == info['id'] ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : '' }}><span>{{ info['text'] }}</span></label>
           </div>
         {% endfor %}
         </div>
@@ -19,14 +19,14 @@
         <div>
         {% for info in values %}
           <div class="checkbox">
-            <label><input type="checkbox" name="{{ name }}[]" id="{{ id }}_{{ info['id'] }}" value="{{ info['id'] | escape }}" {{ info['id'] in value ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ info['text'] }}</label>
+            <label class="input"><input type="checkbox" name="{{ name }}[]" id="{{ id }}_{{ info['id'] }}" value="{{ info['id'] | escape }}" {{ info['id'] in value ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ info['text'] }}</label>
           </div>
         {% endfor %}
         </div>
       {% elseif type == 'switcher' %}
         <div>
           <div class="checkbox">
-            <label><input type="checkbox" name="{{ name }}" id="{{ id }}" data-unchecked-value="0" value="1" {{ value == '1' ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ placeholder }}</label>
+            <label class="input"><input type="checkbox" name="{{ name }}" id="{{ id }}" data-unchecked-value="0" value="1" {{ value == '1' ? 'checked="checked"' : '' }} {{ reload ? 'data-onchange="reloadAll"' : ''}}>{{ placeholder }}</label>
           </div>
         </div>
       {% elseif type == 'textarea' %}
