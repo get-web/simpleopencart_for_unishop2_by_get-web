@@ -116,7 +116,17 @@
     <div class="unicheckout-sticky__total-item product-total">
         <div class="unicheckout-sticky__total-title">{{ text_product_total }} </div>
         <div class="unicheckout-sticky__total-text"><a onclick="uniScrollTo('.checkout-cart__wrapper'); return false;">{{ cart_total }}</a></div>
-    </div>
+    </div>    
+    {% if display_weight %}
+            <div class="unicheckout-sticky__total-item">
+                <div class="unicheckout-sticky__total-title">
+                    {{text_product_weight}}
+                </div>
+                <div class="unicheckout-sticky__total-text">
+                    <span>{{ weight }}</span>
+                </div>
+            </div>        
+    {% endif %}    
     {% for total in totals %}
             <div class="unicheckout-sticky__total-item {{ total.code }}">
                 <div class="unicheckout-sticky__total-title">
